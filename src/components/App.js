@@ -33,7 +33,7 @@ const App = () => {
     
     return(
         <div className='App'>
-            <p>Id number</p>
+            <span>Id number</span>
             <input
             type='number'
             placeholder='Enter a number'
