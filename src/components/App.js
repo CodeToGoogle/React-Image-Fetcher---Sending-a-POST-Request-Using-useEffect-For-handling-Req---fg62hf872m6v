@@ -37,6 +37,7 @@ const App = () => {
             <input
             type='number'
             placeholder='Enter a number'
+            
             onChange={handleChange}
             />
              {loading && Loader }
