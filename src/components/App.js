@@ -1,53 +1,41 @@
 import React, { useState } from 'react'
 import '../styles/App.css';
 import { Loader } from './Loader';
-import  PhotoFrame  from './PhotoFrame';
-import axios from 'axios';
-
+import { PhotoFrame } from './PhotoFrame';
 const App = () => {
-    const [photoData,setPhotoData]=useState(null);
-    const [error, setError]=useState(false);
-    const [loading, setLoading]=useState(null);
-    
-    
-    const handleChange=async(e)=>{
-        const id=e.target.value;
-        if (!id || isNaN(id)) return;
+  const [id, setId] = useState()
+  const [loading, setLoading] = useState(false)
+  const [imgData, setImgData] = useState()
+  const handleNumberChange = (e) => {
+    const number = e.target.value
+    async function fetchData(id) {
+      try {
+        setLoading(true)
+        const rawData = await fetch(`https://jsonplaceholder.typicode.com/photos/${id}`)
+        const data = await rawData.json()
+        setImgData(data)
+      } catch (error) {
 
-        setLoading(true);
-        setError(null);
-
-        try {
-            const response = await axios.get(`https://jsonplaceholder.typicode.com/photos/${id}`);
-            console.log("entered here");
-            
-            setPhotoData(response.data);
-        } catch (err) {
-            setError('An error occurred while fetching the data');
-        }
-
-        setLoading(false);
-        
-    };
-    
-    
-    return(
-        <div className='App'>
-            <span>Id number   </span>
-            <input
-            type='number'
-            placeholder='Enter a number'
-            onChange={handleChange}
-            />
-             {loading && Loader }
-            {error && <div>{error}</div>}
-            {photoData && !loading && <PhotoFrame url={photoData.url} title={photoData.title} />}
-
-        </div>
-
-    );
-  
+      } finally {
+        setLoading(false)
+      }
+    }
+    setId(number)
+    fetchData(number)
+  }
+  return (
+    <div id="main">
+      Id number&nbsp;
+      <input type={"number"} value={id} onChange={handleNumberChange} />
+      {
+        loading ?
+          <Loader />
+          :
+          !loading && imgData && id !== 0 ? <PhotoFrame id={imgData.id} url={imgData.url} title={imgData.title} /> : null
+      }
+    </div>
+  )
 }
 
 
-export default App; 
+export default App;
